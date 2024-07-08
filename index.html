@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Tamagotchi</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Mi Tamagotchi</h1>
+        <div class="barra-container">
+            <div>
+                <label for="hambre">Hambre</label>
+                <progress id="hambre" max="100" value="100"></progress>
+            </div>
+            <div>
+                <label for="cansancio">Cansancio</label>
+                <progress id="cansancio" max="100" value="100"></progress>
+            </div>
+        </div>
+        <div class="botones-container">
+            <button id="startJuegoComida">Iniciar Juego de Comida</button>
+            <button id="startJuegoVallas">Iniciar Juego de Vallas</button>
+        </div>
+        <div id="imagenesEstado" class="imagenes-estado">
+            <img id="principalImg" src="./img/gatoFondo.png" alt="Gato Principal">
+            <div class="estado-img-container">
+                <img id="durmiendoImg" src="./img/GatoDurmiendo.png" alt="Gato Durmiendo">
+                <img id="hambreImg" src="./img/GatoHambre.jpg" alt="Gato Hambriento">
+                <img id="enojadoImg" src="./img/GatoEnojado.jpg" alt="Gato Enojado" class="border-red">
+                <img id="enfermoImg" src="./img/gatoEnfermo.png" alt="Gato Enfermo">
+            </div>
+        </div>
+        <div id="juegoComida" style="display: none;">
+            <canvas id="canvasComida" width="300" height="400"></canvas>
+            <p>Puntos: <span id="puntosComida">0</span></p>
+            <p>Vidas: <span id="vidasComida">3</span></p>
+            <button id="endJuegoComida">Terminar Juego de Comida</button>
+        </div>
+        <div id="juegoVallas" style="display: none;">
+            <canvas id="canvasVallas" width="600" height="200"></canvas>
+            <p>Puntos: <span id="puntosVallas">0</span></p>
+            <button id="endJuegoVallas">Terminar Juego de Vallas</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

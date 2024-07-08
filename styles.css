@@ -1,0 +1,43 @@
+/* styles.css */
+.container {
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+.barra-container {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.botones-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+#imagenesEstado {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+#imagenesEstado img {
+    max-width: 100px;
+    margin: 0 10px;
+}
+
+.border-red {
+    border: 2px solid red;
+}
+
+.estado-img-container {
+    display: flex;
+    flex-direction: column;
+}
+
+canvas {
+    border: 1px solid #000;
+}
