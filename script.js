@@ -35,9 +35,12 @@ document.addEventListener('DOMContentLoaded', () => {
   let jugandoVallas = false;
   let statsInterval;
   let velocidadComida = 2;
-  let velocidadVallas = 5;
-  let gravedad = 1;
-  let salto = 15;
+  let velocidadVallas = 3;
+  let gravedad = 0.5;
+  let salto = 10;
+  let vallaInterval = 2000; // Intervalo inicial de generación de vallas
+  let tiempoDesdeUltimaValla = 0;
+  let tiempoTotal = 0;
 
   // Cargar la imagen del pastelito
   const pastelitoImg = new Image();
@@ -90,13 +93,17 @@ document.addEventListener('DOMContentLoaded', () => {
   function startGameVallas() {
     juegoVallas.style.display = 'block';
     juegoComida.style.display = 'none';
+    puntosVallas = 0;
     juegoActivo = true;
     jugandoVallas = true;
     puntosVallas = 0;
-    velocidadVallas = 5; // Restablecer la velocidad al inicio del juego
+    velocidadVallas = 3; // Restablecer la velocidad al inicio del juego
     personajeVallas.y = canvasVallas.height - 40;
     personajeVallas.vy = 0;
     personajeVallas.onGround = true;
+    vallas.length = 0;
+    tiempoDesdeUltimaValla = 0;
+    tiempoTotal = 0;
     updateDisplaysVallas();
     animateVallas();
     clearInterval(statsInterval); // Parar la disminución de las barras mientras se juega
@@ -178,7 +185,17 @@ document.addEventListener('DOMContentLoaded', () => {
     objetosIncorrectos.forEach((obj) => (obj.y += velocidadComida));
   }
 
-  function updateVallas() {
+  function updateVallas(deltaTime) {
+    tiempoTotal += deltaTime;
+    tiempoDesdeUltimaValla += deltaTime;
+
+    if (tiempoDesdeUltimaValla >= vallaInterval) {
+      generateRandomValla();
+      tiempoDesdeUltimaValla = 0;
+      vallaInterval = Math.max(1000, vallaInterval - 100); // Reducir el intervalo con el tiempo
+      velocidadVallas += 0.1; // Aumentar la velocidad con el tiempo
+    }
+
     vallas.forEach((obj, index) => {
       obj.x -= velocidadVallas;
       if (obj.x + obj.width < 0) {
@@ -189,23 +206,30 @@ document.addEventListener('DOMContentLoaded', () => {
           velocidadVallas += 1; // Aumentar la velocidad cada 5 puntos
         }
       }
-      // Aplicar gravedad al personaje
-      if (!personajeVallas.onGround) {
-        personajeVallas.vy += gravedad;
-      }
-
-      personajeVallas.y += personajeVallas.vy;
-
-      // Detectar si el personaje ha tocado el suelo
-      if (
-        personajeVallas.y + personajeVallas.height >=
-        canvasVallas.height - 40
-      ) {
-        personajeVallas.y = canvasVallas.height - 40 - personajeVallas.height;
-        personajeVallas.vy = 0;
-        personajeVallas.onGround = true;
-      }
     });
+
+    // Aplicar gravedad al personaje
+    if (!personajeVallas.onGround) {
+      personajeVallas.vy += gravedad;
+    }
+
+    personajeVallas.y += personajeVallas.vy;
+
+    // Detectar si el personaje ha tocado el suelo
+    if (
+      personajeVallas.y + personajeVallas.height >=
+      canvasVallas.height - 40
+    ) {
+      personajeVallas.y = canvasVallas.height - 40 - personajeVallas.height;
+      personajeVallas.vy = 0;
+      personajeVallas.onGround = true;
+    }
+
+    // Asegurarse de que el personaje no se salga del canvas por arriba
+    if (personajeVallas.y < 0) {
+      personajeVallas.y = 0;
+      personajeVallas.vy = 0;
+    }
   }
 
   function detectCollisionComida() {
@@ -271,6 +295,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function resetGameVallas() {
     puntosVallas = 0;
     vallas.length = 0;
+    tiempoDesdeUltimaValla = 0;
+    vallaInterval = 2000; // Restablecer el intervalo inicial
+    velocidadVallas = 3; // Restablecer la velocidad inicial
   }
 
   function animateComida() {
@@ -291,8 +318,11 @@ document.addEventListener('DOMContentLoaded', () => {
     requestAnimationFrame(animateComida);
   }
 
-  function animateVallas() {
+  let lastTime = 0;
+  function animateVallas(time) {
     if (!juegoActivo) return;
+    const deltaTime = time - lastTime;
+    lastTime = time;
     ctxVallas.clearRect(0, 0, canvasVallas.width, canvasVallas.height);
     ctxVallas.drawImage(
       fondoImg,
@@ -303,7 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
     );
     drawPersonajeVallas();
     drawVallas();
-    updateVallas();
+    updateVallas(deltaTime);
     detectCollisionVallas();
     requestAnimationFrame(animateVallas);
   }
@@ -382,5 +412,5 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   setInterval(generateRandomItem, 2000);
-  setInterval(generateRandomValla, 3000);
+  setInterval(generateRandomValla, 4000);
 });
